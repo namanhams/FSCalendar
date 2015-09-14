@@ -240,12 +240,6 @@
     cell.date               = [self dateForIndexPath:indexPath];
     _selectedSecondDate = [_selectedSecondDate fs_dateByIgnoringTimeComponents];
     if (_selectedSecondDate) {
-        if (_selectedSecondDate == cell.date) {
-            cell.isSecondSelected = YES;
-        } else {
-            cell.isSecondSelected = NO;
-        }
-        
         BOOL isInbetween = ([cell.date fs_daysFrom:_selectedSecondDate] > 0 && [cell.date fs_daysFrom:_selectedDate] < 0) || ([cell.date fs_daysFrom:_selectedSecondDate] < 0 && [cell.date
                                                                                                                                                                                    fs_daysFrom:_selectedDate] > 0);
         
@@ -255,8 +249,6 @@
             cell.isInbetween = NO;
         }
         
-    } else {
-        cell.isSecondSelected = NO;
     }
     
     cell.isDisabled = ![self shouldSelectDate:cell.date];
@@ -273,7 +265,7 @@
     FSCalendarCell *cell = (FSCalendarCell *)[collectionView cellForItemAtIndexPath:indexPath];
     if (cell.isPlaceholder) {
 
-    [self setSelectedDate:cell.date animate:YES];
+        [self setSelectedDate:cell.date animate:YES];
 
     } else {
         [cell performSelecting];
@@ -291,22 +283,14 @@
             [cell setNeedsLayout];
         }
         if (_selectedSecondDate) {
-            if (_selectedSecondDate == cell.date) {
-                cell.isSecondSelected = YES;
-            } else {
-                cell.isSecondSelected = NO;
-            }
-            
-            BOOL isInbetween = ([cell.date fs_daysFrom:_selectedSecondDate] > 0 && [cell.date fs_daysFrom:_selectedDate] < 0) || ([cell.date fs_daysFrom:_selectedSecondDate] < 0 && [cell.date
-                                                                                                                                                                                      fs_daysFrom:_selectedDate] > 0);
+            BOOL isInbetween = ([cell.date fs_daysFrom:_selectedSecondDate] >= 0 && [cell.date fs_daysFrom:_selectedDate] <= 0) || ([cell.date fs_daysFrom:_selectedSecondDate] <= 0 && [cell.date
+                                                                                                                                                                                      fs_daysFrom:_selectedDate] >= 0);
             if (isInbetween) {
                 cell.isInbetween = YES;
             } else {
                 cell.isInbetween = NO;
             }
             
-        } else {
-            cell.isSecondSelected = NO;
         }
         [cell performDeselecting];
     }];
@@ -316,12 +300,16 @@
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     FSCalendarCell *cell = (FSCalendarCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    if(cell.isDisabled) {
+        return false;
+    }
+    
     if (cell.isPlaceholder) {
         // 如果是上个月或者下个月的元素，则无需调用代理方法，在[setSelectedDate:animated:]中还会调用此方法
         // If selecting a placeholder cell, will get back here and call the delegate method below from [setSelectedDate:animated:]
         return [self isDateInRange:cell.date] && ![cell.date fs_isEqualToDateForDay:_selectedDate];
     }
-    BOOL shouldSelect = ![collectionView.indexPathsForSelectedItems containsObject:indexPath];
+    BOOL shouldSelect = true;//![collectionView.indexPathsForSelectedItems containsObject:indexPath];
     if (shouldSelect && cell.date && [self isDateInRange:cell.date] && !_supressEvent) {
         shouldSelect &= [self shouldSelectDate:cell.date];
     }
@@ -443,7 +431,10 @@
             [self collectionView:_collectionView didDeselectItemAtIndexPath:currentIndexPath];
         }
         [_collectionView selectItemAtIndexPath:selectedIndexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        
+        _supressEvent = YES;
         [self collectionView:_collectionView didSelectItemAtIndexPath:selectedIndexPath];
+        _supressEvent = NO;
     }
     if (!_collectionView.tracking && !_collectionView.decelerating) {
         [self willChangeValueForKey:@"currentMonth"];

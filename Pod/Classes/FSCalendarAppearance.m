@@ -49,7 +49,6 @@
         _backgroundColors[@(FSCalendarCellStateDisabled)]    = [UIColor clearColor];
         _backgroundColors[@(FSCalendarCellStatePlaceholder)] = [UIColor clearColor];
         _backgroundColors[@(FSCalendarCellStateToday)]       = kPink;
-        _backgroundColors[@(FSCalendarCellStateSecondSelected)] = kPink;
         _backgroundColors[@(FSCalendarCellStateHighlighted)] = kBlueHighlighted;
         
         _titleColors = [NSMutableDictionary dictionaryWithCapacity:4];
@@ -58,7 +57,6 @@
         _titleColors[@(FSCalendarCellStateDisabled)]    = [UIColor grayColor];
         _titleColors[@(FSCalendarCellStatePlaceholder)] = [UIColor lightGrayColor];
         _titleColors[@(FSCalendarCellStateToday)]       = [UIColor whiteColor];
-        _titleColors[@(FSCalendarCellStateSecondSelected)] = [UIColor whiteColor];
         _titleColors[@(FSCalendarCellStateHighlighted)] = [UIColor whiteColor];
         
         _subtitleColors = [NSMutableDictionary dictionaryWithCapacity:4];
@@ -67,7 +65,6 @@
         _subtitleColors[@(FSCalendarCellStateDisabled)]    = [UIColor lightGrayColor];
         _subtitleColors[@(FSCalendarCellStatePlaceholder)] = [UIColor lightGrayColor];
         _subtitleColors[@(FSCalendarCellStateToday)]       = [UIColor whiteColor];
-        _subtitleColors[@(FSCalendarCellStateSecondSelected)] = [UIColor whiteColor];
         _subtitleColors[@(FSCalendarCellStateHighlighted)] = [UIColor whiteColor];
         
         _cellStyle = FSCalendarCellStyleCircle;
@@ -119,15 +116,6 @@
     [_calendar.collectionView.visibleCells makeObjectsPerformSelector:@selector(setNeedsLayout)];
 }
 
-- (void) setTitleSecondSelectionColor:(UIColor *)color {
-    if (color) {
-        _titleColors[@(FSCalendarCellStateSecondSelected)] = color;
-    } else {
-        [_titleColors removeObjectForKey:@(FSCalendarCellStateSecondSelected)];
-    }
-    [_calendar.collectionView.visibleCells makeObjectsPerformSelector:@selector(setNeedsLayout)];
-}
-
 - (void) setTitleHighlightedColor:(UIColor *) color {
     if (color) {
         _titleColors[@(FSCalendarCellStateHighlighted)]= color;
@@ -135,10 +123,6 @@
         [_titleColors removeObjectForKey:@(FSCalendarCellStateHighlighted)];
     }
     [_calendar.collectionView.visibleCells makeObjectsPerformSelector:@selector(setNeedsLayout)];
-}
-
-- (UIColor *)titleSecondSelectionColor {
-    return _titleColors[@(FSCalendarCellStateSecondSelected)];
 }
 
 - (UIColor *)titleHighlightedColor {
@@ -220,19 +204,6 @@
     [_calendar.collectionView.visibleCells makeObjectsPerformSelector:@selector(setNeedsLayout)];
 }
 
--(void)setSubtitleSecondSelectionColor:(UIColor *)color {
-    if (color) {
-        _subtitleColors[@(FSCalendarCellStateSecondSelected)] = color;
-    } else {
-        [_subtitleColors removeObjectForKey:@(FSCalendarCellStateSecondSelected)];
-    }
-    [_calendar.collectionView.visibleCells makeObjectsPerformSelector:@selector(setNeedsLayout)];
-}
-
-- (UIColor *)subtitleSecondSelectionColor {
-    return _subtitleColors[@(FSCalendarCellStateSecondSelected)];
-}
-
 - (UIColor *)subtitleTodayColor
 {
     return _subtitleColors[@(FSCalendarCellStateToday)];
@@ -283,16 +254,6 @@
     return _backgroundColors[@(FSCalendarCellStateSelected)];
 }
 
-- (void)setSecondSelectionColor:(UIColor *)color {
-    if (color) {
-        _backgroundColors[@(FSCalendarCellStateSecondSelected)] = color;
-    } else {
-        [_backgroundColors removeObjectForKey:@(FSCalendarCellStateSecondSelected)];
-    }
-    
-    [_calendar.collectionView.visibleCells makeObjectsPerformSelector:@selector(setNeedsLayout)];
-}
-
 - (void)setHighlightedColor:(UIColor *)color {
     if (color) {
         _backgroundColors[@(FSCalendarCellStateHighlighted)] = color;
@@ -311,10 +272,6 @@
         [_backgroundColors removeObjectForKey:@(FSCalendarCellStateToday)];
     }
     [_calendar.collectionView.visibleCells makeObjectsPerformSelector:@selector(setNeedsLayout)];
-}
-
-- (UIColor *)secondSelectionColor {
-    return _backgroundColors[@(FSCalendarCellStateSecondSelected)];
 }
 
 - (UIColor *)highlightedColor {

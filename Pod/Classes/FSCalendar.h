@@ -28,8 +28,7 @@ typedef NS_ENUM(NSInteger, FSCalendarCellState) {
     FSCalendarCellStateDisabled    = 1 << 2,
     FSCalendarCellStateToday       = 1 << 3,
     FSCalendarCellStateWeekend     = 1 << 4,
-    FSCalendarCellStateSecondSelected = 1 << 5,
-    FSCalendarCellStateHighlighted = 1 << 6
+    FSCalendarCellStateHighlighted = 1 << 5
 };
 
 @protocol FSCalendarDelegate <NSObject>
@@ -43,8 +42,8 @@ typedef NS_ENUM(NSInteger, FSCalendarCellState) {
 @protocol FSCalendarDataSource <NSObject>
 
 @optional
-- (NSString *)calendar:(FSCalendar *)calendar subtitleForDate:(NSDate *)date;
-- (UIImage *)calendar:(FSCalendar *)calendar imageForDate:(NSDate *)date;
+- (nullable NSString *)calendar:(FSCalendar *)calendar subtitleForDate:(NSDate *)date;
+- (nullable UIImage *)calendar:(FSCalendar *)calendar imageForDate:(NSDate *)date;
 - (BOOL)calendar:(FSCalendar *)calendar hasEventForDate:(NSDate *)date;
 - (NSDate *)minimumDateForCalendar:(FSCalendar *)calendar;
 - (NSDate *)maximumDateForCalendar:(FSCalendar *)calendar;
@@ -58,9 +57,9 @@ typedef NS_ENUM(NSInteger, FSCalendarCellState) {
 @property (weak, nonatomic) IBOutlet id<FSCalendarDataSource> dataSource;
 
 @property (strong, nonatomic) NSDate *currentDate;
-@property (strong, nonatomic) NSDate *selectedDate;
 @property (strong, nonatomic) NSDate *currentMonth;
-@property (strong, nonatomic) NSDate *selectedSecondDate;
+@property (strong, nonatomic, nullable) NSDate *selectedDate;
+@property (strong, nonatomic, nullable) NSDate *selectedSecondDate;
 
 @property (assign, nonatomic) FSCalendarFlow flow;
 @property (assign, nonatomic) IBInspectable NSUInteger firstWeekday;

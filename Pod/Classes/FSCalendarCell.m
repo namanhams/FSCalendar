@@ -104,7 +104,9 @@
 
 - (BOOL)isSelected
 {
-    return [super isSelected] || ([self.calendar.selectedDate fs_isEqualToDateForDay:_date] && !_deselecting);
+    return [super isSelected] ||
+    ([self.calendar.selectedDate fs_isEqualToDateForDay:_date]) ||
+    ([self.calendar.selectedSecondDate fs_isEqualToDateForDay:_date]);
 }
 
 #pragma mark - Public
@@ -167,12 +169,14 @@
         _titleLabel.frame = CGRectMake(0, 0, self.fs_width, floor(self.contentView.fs_height*5.0/6.0));
         _subtitleLabel.hidden = YES;
     }
-    _backgroundLayer.hidden = !self.selected && !self.isToday && !self.isSecondSelected && !self.isInbetween;
+    _backgroundLayer.hidden = !self.selected && !self.isToday && !self.isInbetween;
     _backgroundLayer.path = _appearance.cellStyle == FSCalendarCellStyleCircle ?
     [UIBezierPath bezierPathWithOvalInRect:_backgroundLayer.bounds].CGPath :
     [UIBezierPath bezierPathWithRect:_backgroundLayer.bounds].CGPath;
     _eventLayer.hidden = !_hasEvent;
     _eventLayer.fillColor = _appearance.eventColor.CGColor;
+    
+    NSLog(@"%@ : %d", _titleLabel.text, _backgroundLayer.hidden);
     
     if (_image) {
         _imageLayer.hidden = NO;
@@ -204,20 +208,17 @@
     if (self.isSelected) {
         return dictionary[@(FSCalendarCellStateSelected)];
     }
+    if (self.isDisabled) {
+        return dictionary[@(FSCalendarCellStateDisabled)];
+    }
     if (self.isToday) {
         return dictionary[@(FSCalendarCellStateToday)];
-    }
-    if (self.isSecondSelected) {
-        return dictionary[@(FSCalendarCellStateSecondSelected)];
     }
     if (self.isInbetween) {
         return dictionary[@(FSCalendarCellStateHighlighted)];
     }
     if (self.isPlaceholder) {
         return dictionary[@(FSCalendarCellStatePlaceholder)];
-    }
-    if (self.isDisabled) {
-        return dictionary[@(FSCalendarCellStateDisabled)];
     }
     if (self.isWeekend && [[dictionary allKeys] containsObject:@(FSCalendarCellStateWeekend)]) {
         return dictionary[@(FSCalendarCellStateWeekend)];
